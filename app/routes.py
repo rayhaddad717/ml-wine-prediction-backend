@@ -1,39 +1,52 @@
 from flask import jsonify, request
-from app.services import predict
 from app.utils import WineSample
 from app import app
-import pytesseract
-from PIL import Image
 from flask import request, jsonify
-from werkzeug.utils import secure_filename
-import os
-@app.route('/api/convert_image_to_string', methods=['POST'])
+from app.controller import wine_controller,image_controller
+
+@app.route('/api/wine/predict_from_image', methods=['POST'])
 def convert_image_to_string():
     if 'image' not in request.files:
-        return jsonify({"error": "No image provided"}), 400
+        return jsonify({'success':False,"error": {'file':"No image provided"}}), 400
+    try:
+        # decode the image into text
+        text = image_controller.decode(request.files['image'])
+    except Exception as e:
+        return jsonify({'success':False,"error": {'Error':"Internal server error"}}), 500
+    
+    response = wine_controller.predict_from_image(text)
+    return jsonify(response), 200 if response['success'] else 500
 
-    image = request.files['image']
-    image_name = secure_filename(image.filename)
-    image_path = os.path.join('temp', image_name)
-    image.save(image_path)
 
-    img = Image.open(image_path)
-    text = pytesseract.image_to_string(img)
+@app.route('/api/wine/predict', methods=['POST'])
+def wine_predict():
+    # validate user data
+    validated_schema = WineSample(dict(request.form))
+    if(validated_schema.validated == False):
+        return jsonify({'success':False,'error': validated_schema.errors}), 400
+    try:
+        # predict outcome
+        prediction = wine_controller.wine_predict(validated_schema)
+        return jsonify({'success': True,'prediction':prediction,'error':None}), 200
+    except Exception as e:
+        return jsonify({'success': False,'prediction':None,'error':{'Server error':'Error'}}), 500
 
-    os.remove(image_path)
-    data_dict = {
-    'fixed acidity': [6.5],
-    'volatile acidity': [0.2],
-    'citric acid': [0.35],
-    'residual sugar': [1.5],
-    'chlorides': [0.05],
-    'free sulfur dioxide': [12.0],
-    'density': [0.9955],
-    'pH': [3.1],
-    'sulphates': [0.7],
-    'alcohol': [11.5],
-    'type': ['red']
-    }
-    df = WineSample(data_dict).get_dataframe()
-    prediction = predict(df)
-    return jsonify({"text": text,"prediction":int(prediction)})
+
+@app.route('/api/wine/bulk_predict', methods=['POST'])
+def bulk_wine_predict():
+    # check if given file
+    if 'csv_file' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+        # Check if the file is a CSV file
+    if not request.files['csv_file'].filename.endswith('.csv'):
+        return jsonify({'error': 'File must be a CSV file'}), 400
+    # return predictions
+    try:
+        response = wine_controller.bulk_wine_predict(request.files['csv_file'])
+        return jsonify(response),200 if response['success'] else 400
+    except:
+        return jsonify({'success':False,'error':{"file-type":'could not parse file'}}),500
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
