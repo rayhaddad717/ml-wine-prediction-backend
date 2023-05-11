@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Generator</title>
+  </head>
+  <style>
+    .container {
+      width: fit-content;
+      border: 2px solid black;
+      padding: 5px;
+    }
+    li {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      /* justify-content: space-between; */
+      gap: 1rem;
+      border-bottom: 1px solid black;
+      padding: 7px;
+      font-family: Arial;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    li.acidity {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0;
+    }
+    .basis-100 {
+      flex-basis: 100%;
+    }
+    .flex {
+      display: flex;
+    }
+    .gap-1 {
+      gap: 1rem;
+    }
+    .bor-bot {
+      border-bottom: 1px solid black;
+    }
+  </style>
+  <body>
+    <ul class="container">
+      <li>
+        <h2>Nutrition Facts</h2>
+      </li>
+      <li>
+        <p>10 servings</p>
+        <div>
+          <b>Serv. size</b>
+          <b>1 tablet (6.0g)</b>
+        </div>
+      </li>
+      <li>
+        <p>Amount per serving</p>
+        <div class="flex gap-1">
+          <p>Calories</p>
+          <p>10</p>
+        </div>
+        <div></div>
+      </li>
+
+      <li><p>% Daily Value</p></li>
+      <li class="acidity">
+        <div class="basis-100 bor-bot"><p>Acidity</p></div>
+        <div>
+          <ul>
+            <li>
+              <span> Fixed Acidity </span>
+              <span>6.5</span>
+            </li>
+            <li><span>Volatile Acidity</span> <span>0.2</span></li>
+          </ul>
+        </div>
+      </li>
+      <li><span>Citric Acid</span><span>0.35</span></li>
+      <li><span>Residual Sugar</span><span>1.5</span></li>
+      <li><span>Chlorides</span><span>0.05</span></li>
+      <li><span>Free Sulfur Dioxide</span><span>12.0</span></li>
+      <li><span>Density</span><span>0.9955</span></li>
+      <li><span>pH</span><span>3.1</span></li>
+      <li><span>Sulphates</span><span>0.7</span></li>
+      <li><span>Alcohol</span><span>11.5</span></li>
+
+      <div></div>
+    </ul>
+  </body>
+</html>

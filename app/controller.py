@@ -44,7 +44,7 @@ class WineController:
             # matching the keywords
             for keyword in keywords:
                 pattern = r'{}(?:\s*[^0-9]*)([\d.]+)'.format(keyword)
-                match = re.search(pattern, paragraph, re.IGNORECASE)
+                match = re.search(pattern, text, re.IGNORECASE)
                 if match:
                     values[keyword] = float(match.group(1))
             validated_sample = WineSample(values,True)
@@ -56,7 +56,6 @@ class WineController:
                 prediction = model.predict(validated_sample.get_dataframe())
             else:
                 missing_columns = validated_sample.errors.__len__()
-            
             response = {
                 'success':True,
                 'errors':None if validated_sample.validated else validated_sample.errors,
