@@ -41,15 +41,18 @@ class WineController:
                     "name": current_dictionary["name"]
                     if "name" in current_dictionary
                     else i + 1,
-                    "prediction": int(
+                    "quality": float(
                         model.predict(
                             current_df.drop(["name"], axis=1)
                             if "name" in current_df.columns and False
-                            else current_df
+                            else current_df,
+                            True,
                         )
                     ),
                 }
             )
+            predictions.sort(key=lambda pred: pred.get("quality"), reverse=True)
+
         return {"predictions": predictions, "success": True, "error": None, "row": None}
 
     def predict_from_image(self, text):
